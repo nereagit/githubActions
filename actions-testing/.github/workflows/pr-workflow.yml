@@ -1,0 +1,30 @@
+#.github/workflows/ci-workflow.yml
+name: CI Test/Validation
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  #check reviewers status
+  reviewers-added:
+    runs-on: ubuntu-latest
+    env:
+      can_bypass_review: 
+      
+    steps:
+      - name: Reviews Counter
+        uses: jrylan/github-action-reviews-counter@v1.0.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Check review status
+        if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
+        with:
+          script: |
+              core.setFailed('There are no reviews for this request.')
+      - name: Check pull request approval status
+        uses: actions/github-script@v6
+        if: ${{ !contains(('nereagit'), github.actor)}} && github.event.review.state != 'approved'
+        with:
+          script: |
+              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')
