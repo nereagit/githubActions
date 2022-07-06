@@ -1,5 +1,5 @@
 #.github/workflows/ci-workflow.yml
-name: CI Test/Validation
+name: CI/CD Test/Validation
 on:
   pull_request:
     branches:
