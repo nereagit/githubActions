@@ -9,8 +9,6 @@ jobs:
   #check reviewers status
   reviewers-added:
     runs-on: ubuntu-latest
-    env:
-      can_bypass_review: 
       
     steps:
       - name: Reviews Counter
