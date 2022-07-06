@@ -11,3 +11,13 @@ jobs:
       
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Reviews Counter
+        uses: jrylan/github-action-reviews-counter@v1.0.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Check review status
+        uses: jrylan/github-action-reviews-counter@v1.0.0
+        if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
+        with:
+          script: |
+              core.setFailed('There are no reviews for this request.')
