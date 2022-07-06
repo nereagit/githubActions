@@ -1,4 +1,4 @@
-name: CI/CD Test/Validation
+name: CI Test/Validation
 on:
   pull_request:
     branches:
@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
       
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
