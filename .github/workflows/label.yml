@@ -23,8 +23,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
+      
       # Runs a single command using the runners shell
+      # Add step per team to label them
       - name: Add labels
         uses: andymckay/labeler@master
         if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
@@ -32,9 +33,9 @@ jobs:
           add-labels: "test label"
           ignore-if-labeled: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      
+      #Fails only non admins by checking the PR status 
+      - name: Check approval status
+        uses: jrylan/github-action-reviews-counter@main
+        if: (steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0 && !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)
+        run: exit 1
