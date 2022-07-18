@@ -31,7 +31,7 @@ jobs:
         if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
         with:
           add-labels: "test label"
-          ignore-if-labeled: true
+          #ignore-if-labeled: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       
       #Fails only non admins by checking the PR status 
