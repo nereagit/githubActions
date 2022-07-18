@@ -23,17 +23,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
-      # Runs a single command using the runners shell
-      # Add step per team to label them
-      - name: Add labels
-        uses: andymckay/labeler@master
-        if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
-        with:
-          add-labels: "test label"
-          ignore-if-labeled: false
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       #Fails only non admins by checking the PR status 
       #TODO Add message
       - name: Reviews
@@ -46,3 +36,15 @@ jobs:
         with:
           script: |
               core.setFailed('No approval given to the PR.')
+      
+      # Runs a single command using the runners shell
+      # Add step per team to label them
+      - name: Add labels
+        uses: andymckay/labeler@master
+        if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
+        with:
+          add-labels: "test label"
+          ignore-if-labeled: false
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      
+     
