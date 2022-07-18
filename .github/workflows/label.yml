@@ -49,12 +49,12 @@ jobs:
               core.setFailed('A review is required in this PR.')
       
       #PR Approval required for all non-admin users when the PR has been submitted
-      - name: Approval Required
-        if: ${{!contains(fromJson('["adminUser2", "adminUser2"]'), github.event.pull_request.user.login) && github.event.pull_request_review.submitted && github.event.review.state == 'approved'}}
-        uses: actions/github-script@v3
-        with:
-          script: |
-              core.setFailed('An approval is needed from the pull request reviwers.')
+      #- name: Approval Required
+      #  if: ${{!contains(fromJson('["adminUser2", "adminUser2"]'), github.event.pull_request.user.login) && github.event.pull_request_review.submitted && github.event.review.state == 'approved'}}
+      #  uses: actions/github-script@v3
+      #  with:
+      #    script: |
+      #        core.setFailed('An approval is needed from the pull request reviwers.')
            
 
 
