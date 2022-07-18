@@ -7,46 +7,57 @@ on:
   # Triggers the workflow on pull request events but only for the "main" branch
   pull_request:
     branches: [ "main" ]
-    types: [opened,reopened]
+    types: [opened,reopened,submitted]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+
+  labelling:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      #Fails only non admins by checking the PR status 
-      #TODO Add message
-      - name: Required Review
-        uses: jrylan/github-action-reviews-counter@main
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check approval status 
-        if: ${{!github.event.pull_request.review_requested && !contains(fromJson('["adminUser2", "adminUser2"]'), github.event.pull_request.user.login)}}
-        #if: ${{ steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0 }} #&& !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)
-        #run: echo Approved ${{steps.reviews.outputs.approved}}, Changes ${{steps.reviews.outputs.changes_requested}}, User ${{contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)}}
-        uses: actions/github-script@v3
-        with:
-          script: |
-              core.setFailed('No approval given to the PR.')
-      
-      # Runs a single command using the runners shell
       # Add step per team to label them
       - name: Add labels
         uses: andymckay/labeler@master
         if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
         with:
           add-labels: "test label"
-          ignore-if-labeled: false
+          ignore-if-labeled: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  reviews:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      #Fails only non admins by checking the PR status 
+      - name: Require Review
+        if: ${{!github.event.pull_request.review_requested && !contains(fromJson('["nereagit", "adminUser2"]'), github.event.pull_request.user.login)}}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('A review is required in this PR.')
+      
+      #PR Approval required for all non-admin users when the PR has been submitted
+      - name: Approval Required
+        if: ${{!contains(fromJson('["adminUser2", "adminUser2"]'), github.event.pull_request.user.login) && github.event.pull_request_review.submitted && github.event.review.state == 'approved'}}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('An approval is needed from the pull request reviwers.')
+           
+
+
+
       
      
