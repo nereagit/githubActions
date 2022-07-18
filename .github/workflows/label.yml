@@ -24,18 +24,15 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      #Fails only non admins by checking the PR status 
-      #TODO Add message
-      - name: Reviews
-        uses: jrylan/github-action-reviews-counter@main
+      - name: Required Review
+        uses: Automattic/action-required-review@v3
+        if: github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check approval status 
-        if: steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0 #&& !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)
-        uses: actions/github-script@v3
-        with:
-          script: |
-              core.setFailed('No approval given to the PR.')
+          token: ${{ secrets.GITHUB_TOKEN }}
+          requirements: |
+            - paths: unmatched
+              teams:
+                - any-of
       
       # Runs a single command using the runners shell
       # Add step per team to label them
