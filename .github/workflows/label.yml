@@ -42,4 +42,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Check approval status 
         if: steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0 && !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)
-          run: exit 1
+        run: exit 1
