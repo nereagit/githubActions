@@ -27,6 +27,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Add labels
         uses: andymckay/labeler@master
+        if: ${{ github.event.pull_request.user.login == 'nereagit'}}
         with:
           add-labels: "test label"
           ignore-if-labeled: true
