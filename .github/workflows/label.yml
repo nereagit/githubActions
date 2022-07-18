@@ -42,7 +42,7 @@ jobs:
 
       #Fails only non admins by checking the PR status 
       - name: Require Review
-        if: ${{!github.event.pull_request.review_requested && !contains(fromJson('["nereagit", "adminUser2"]'), github.event.pull_request.user.login)}}
+        if: ${{!github.event.pull_request.review_requested && !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)}}
         uses: actions/github-script@v3
         with:
           script: |
