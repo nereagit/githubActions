@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
         ADMIN_USERS: ${{secrets.ADMIN_USERS}}
+        CG_USERS: ${{secrets.CG_USERS}}
+        OFFLINE_USERS: ${{secrets.OFFLINE_USERS}}
+        B2B_USERS: ${{secrets.B2B_USERS}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -28,7 +31,7 @@ jobs:
       # Add step per team to label them
       - name: Add CG Team labels
         uses: andymckay/labeler@master
-        if: contains(env.ADMIN_USERS, github.event.pull_request.user.login)
+        if: contains(env.CG_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "CG Team"
           ignore-if-labeled: true
@@ -36,7 +39,7 @@ jobs:
       
       - name: Add Offline Team labels
         uses: andymckay/labeler@master
-        if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
+        if: contains(OFFLINE_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "Offline Team"
           ignore-if-labeled: true
@@ -44,7 +47,7 @@ jobs:
 
       - name: Add B2B Team labels
         uses: andymckay/labeler@master
-        if: contains(fromJson('["nereagit", "test"]'), github.event.pull_request.user.login)
+        if: contains(B2B_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "B2B Team"
           ignore-if-labeled: true
@@ -60,7 +63,7 @@ jobs:
 
       #Fails only non admins by checking the PR status 
       - name: Require Review
-        if: ${{!github.event.pull_request.review_requested && !contains(fromJson('["adminUser1", "adminUser2"]'), github.event.pull_request.user.login)}}
+        if: ${{!github.event.pull_request.review_requested && !contains(env.ADMIN_USERS, github.event.pull_request.user.login)}}
         uses: actions/github-script@v3
         with:
           script: |
