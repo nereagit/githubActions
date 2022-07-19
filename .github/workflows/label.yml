@@ -39,7 +39,7 @@ jobs:
       
       - name: Add Offline Team labels
         uses: andymckay/labeler@master
-        if: contains(OFFLINE_USERS, github.event.pull_request.user.login)
+        if: contains(env.OFFLINE_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "Offline Team"
           ignore-if-labeled: true
@@ -47,7 +47,7 @@ jobs:
 
       - name: Add B2B Team labels
         uses: andymckay/labeler@master
-        if: contains(B2B_USERS, github.event.pull_request.user.login)
+        if: contains(env.B2B_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "B2B Team"
           ignore-if-labeled: true
