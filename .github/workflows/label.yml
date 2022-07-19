@@ -28,7 +28,7 @@ jobs:
       # Add step per team to label them
       - name: Add CG Team labels
         uses: andymckay/labeler@master
-        if: contains($ADMIN_USERS, github.event.pull_request.user.login)
+        if: contains(env.ADMIN_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "CG Team"
           ignore-if-labeled: true
