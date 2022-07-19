@@ -23,6 +23,7 @@ jobs:
         CG_USERS: ${{secrets.CG_USERS}}
         OFFLINE_USERS: ${{secrets.OFFLINE_USERS}}
         B2B_USERS: ${{secrets.B2B_USERS}}
+        INT_USERS: ${{secrets.INT_USERS}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -50,6 +51,14 @@ jobs:
         if: contains(env.B2B_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "B2B Team"
+          ignore-if-labeled: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Integration Team labels
+        uses: andymckay/labeler@master
+        if: contains(env.INT_USERS, github.event.pull_request.user.login)
+        with:
+          add-labels: "Integration Team"
           ignore-if-labeled: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
