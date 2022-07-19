@@ -18,6 +18,8 @@ jobs:
   labelling:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+        ADMIN_USERS: ${{secrets.ADMIN_USERS}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -26,9 +28,7 @@ jobs:
       # Add step per team to label them
       - name: Add CG Team labels
         uses: andymckay/labeler@master
-        env:
-          ADMIN_USERS: ${{ secrets.ADMIN_USERS }}
-        if: contains(fromJson($ADMIN_USERS), github.event.pull_request.user.login)
+        if: contains($ADMIN_USERS, github.event.pull_request.user.login)
         with:
           add-labels: "CG Team"
           ignore-if-labeled: true
