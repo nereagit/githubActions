@@ -27,8 +27,3 @@ jobs:
         with:
           script: |
               core.setFailed('This PR needs to be approved make sure to add the right reviewers!')
-      - name: Comment on failure
-        uses: quipper/comment-failure-action@v0.1.1
-        if: 
-        with:
-          api-token: ${{ secrets.GITHUB_TOKEN }}
