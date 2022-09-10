@@ -4,16 +4,24 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }} 
+  cancel-in-progress: true
+
 jobs:
   #check reviewers status
   reviewers-added:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
       
     steps:
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
       - name: Check review status
         uses: jrylan/github-action-reviews-counter@v1.0.0
         if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
@@ -25,4 +33,6 @@ jobs:
         if: ${{ !contains(('nereagit'), github.actor)}} && github.event.review.state != 'approved'
         with:
           script: |
-              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')
+              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')   
+  
+ 
