@@ -18,6 +18,10 @@ jobs:
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
       - name: Check review status
         uses: jrylan/github-action-reviews-counter@v1.0.0
         if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
