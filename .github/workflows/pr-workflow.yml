@@ -11,7 +11,7 @@ concurrency:
 jobs:
   #check reviewers status
   reviewers-added:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
       
     steps:
       - name: Reviews Counter
