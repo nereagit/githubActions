@@ -4,6 +4,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }} 
+  cancel-in-progress: true
+
 jobs:
   #check reviewers status
   reviewers-added:
@@ -27,10 +31,4 @@ jobs:
           script: |
               core.setFailed('This PR needs to be approved make sure to add the right reviewers!')
   
-  comment-failure:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Comment on failure
-        uses: quipper/comment-failure-action@v0.1.1
-        with:
-          api-token: ${{ secrets.GITHUB_TOKEN  }} # Replace with your secret's name
+ 
