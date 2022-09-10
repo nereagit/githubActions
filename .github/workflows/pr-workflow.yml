@@ -29,6 +29,6 @@ jobs:
         if: ${{ !contains(('nereagit'), github.actor)}} && github.event.review.state != 'approved'
         with:
           script: |
-              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')  
+              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')   
   
  
