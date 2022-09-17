@@ -10,21 +10,19 @@ on:
 
 jobs:
   #check reviewers status
-  reviewers-added:
+  reviewers:
     runs-on: ubuntu-latest 
     concurrency:
       group: ${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
-
-    # Map a step output to a job output
-    outputs:
-      output1: ${{ steps.step1.outputs.jobid }}
-      
+     
     steps:
       - name: cancel concurrent jobs
-        run: echo ${{needs.reviewers-added.outputs.output1}}
+        run: echo ${{needs.lastjobid}}
       - id: step1
-        run: echo "::set-output name=jobid::${{ github.run_id }}"
+        run: echo "setting lastjobid"
+        env:
+          lastjobid: ${{ github.run_id }}
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
