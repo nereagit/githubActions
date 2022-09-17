@@ -4,16 +4,27 @@ on:
     branches:
       - develop
 
-concurrency:
-  group: ${{ github.head_ref || github.ref_name }} 
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.head_ref || github.ref_name }} 
+#  cancel-in-progress: true
 
 jobs:
   #check reviewers status
   reviewers-added:
     runs-on: ubuntu-latest 
+    concurrency:
+      group: ${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
       
     steps:
+      - name: cancel concurrent jobs
+        run: echo "canceling job..."
+      - id: step1
+        run: echo "::set-output name=test::hello"
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
@@ -21,7 +32,7 @@ jobs:
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
+          time: '90s'
       - name: Check review status
         uses: jrylan/github-action-reviews-counter@v1.0.0
         if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
