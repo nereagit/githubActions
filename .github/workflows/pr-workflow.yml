@@ -18,7 +18,7 @@ jobs:
      
     steps:
       - name: cancel concurrent jobs
-        run: echo ${{needs.env.lastjobid}}
+        run: echo ${{env.lastjobid}}
       - id: step1
         run: echo "setting lastjobid"
         env:
