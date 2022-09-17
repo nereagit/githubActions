@@ -24,7 +24,7 @@ jobs:
       - name: cancel concurrent jobs
         run: echo ${{needs.reviewers-added.outputs.output1}}
       - id: step1
-        run: echo "::set-output name=jobid::${{github.job}}"
+        run: echo "::set-output name=jobid::$github.job"
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
