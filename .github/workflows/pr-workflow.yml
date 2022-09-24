@@ -30,10 +30,10 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
           workflow: pr-workflow.yml #${{ github.event.workflow_run.workflow_id }}
           pr: ${{github.event.pull_request.number}}
-          name: ${{ github.head_ref }} # Optional, uploaded artifact name
+          #name: ${{ github.head_ref }} # Optional, uploaded artifact name
           check_artifacts:  true # default false, just try to download artifact from the last workflow
           skip_unpack: false
-          if_no_artifact_found: warn
+          if_no_artifact_found: fail
       #read from file and assign to outputs object
       - name: Read and assign id to be cancelled
         id: output_test
