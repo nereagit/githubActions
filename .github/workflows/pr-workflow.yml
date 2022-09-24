@@ -17,8 +17,8 @@ jobs:
       cancel-in-progress: true
      
     steps:
-      - name: cancel concurrent jobs
-        run: echo ${{lastjobid}}
+     #  - name: cancel concurrent jobs
+     #    run: echo ${{lastjobid}}
       - name: Create Workflow Artifact
         run: |
           echo "Writing in workflow log file..."
