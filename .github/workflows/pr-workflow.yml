@@ -29,7 +29,7 @@ jobs:
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
           event: push   # Optional, defaults to all types
-          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow: "3118607619"
           name: ${{ github.head_ref }} # Optional, uploaded artifact name
           check_artifacts:  false # default false, just try to download artifact from the last workflow
           skip_unpack: false
