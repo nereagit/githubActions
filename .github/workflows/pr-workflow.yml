@@ -30,10 +30,8 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
           workflow: pr-workflow.yml #${{ github.event.workflow_run.workflow_id }}
          
-          name: ${{ github.head_ref }} # Optional, uploaded artifact name
-          path: WorkflowRunLog.txt
-          check_artifacts:  true # default false, just try to download artifact from the last workflow
-          #skip_unpack: false
+         
+          workflow_conclusion: success
           commit: ${{github.event.pull_request.head.sha}}
           if_no_artifact_found: fail
       #read from file and assign to outputs object
