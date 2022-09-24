@@ -28,7 +28,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow: pr-workflow.yml #${{ github.event.workflow_run.workflow_id }}
           name: ${{ github.head_ref }} # Optional, uploaded artifact name
           check_artifacts:  false # default false, just try to download artifact from the last workflow
           skip_unpack: false
