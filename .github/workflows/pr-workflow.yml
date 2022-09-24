@@ -18,11 +18,18 @@ jobs:
      
     steps:
       - name: cancel concurrent jobs
-        run: echo ${{env.lastjobid}}
-      - id: step1
-        run: echo "setting lastjobid"
-        env:
-          lastjobid: ${{ github.run_id }}
+        run: echo ${{lastjobid}}
+      - name: Create Workflow Artifact
+        run: |
+          echo "Writing in workflow log file..."
+          echo ${{ github.run_id }} >> WorkflowRunLog.txt
+        #env:
+        #  lastjobid: ${{ github.run_id }}
+      - name: Create Workflow Artifact
+        uses: actions/upload-artifact@v3
+         with:
+          name: ${{ github.head_ref }} # source branch of the pull request
+          path: WorkflowRunLog.txt #need to create a folder to store this >> need to delete this artifact when merging the branch
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
