@@ -27,7 +27,7 @@ jobs:
         #  lastjobid: ${{ github.run_id }}
       - name: Create Workflow Artifact
         uses: actions/upload-artifact@v3
-         with:
+        with:
           name: ${{ github.head_ref }} # source branch of the pull request
           path: WorkflowRunLog.txt #need to create a folder to store this >> need to delete this artifact when merging the branch
       - name: Reviews Counter
