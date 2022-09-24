@@ -23,16 +23,16 @@ jobs:
     #    with:
     #      name: ${{ github.head_ref }}
     #      path: WorkflowRunLog.txt
-    - name: Download artifact
-      id: download-artifact
-      uses: dawidd6/action-download-artifact@v2
-      with:
-        github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-        event: push   # Optional, defaults to all types
-        name: ${{ github.head_ref }} # Optional, uploaded artifact name
-        check_artifacts:  false # default false, just try to download artifact from the last workflow
-        skip_unpack: false
-        if_no_artifact_found: warn
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+          event: push   # Optional, defaults to all types
+          name: ${{ github.head_ref }} # Optional, uploaded artifact name
+          check_artifacts:  false # default false, just try to download artifact from the last workflow
+          skip_unpack: false
+          if_no_artifact_found: warn
       #read from file and assign to outputs object
       - name: Read and assign id to be cancelled
         id: output_test
