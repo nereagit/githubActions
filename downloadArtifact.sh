@@ -20,3 +20,5 @@ rm WorkflowRunLog.txt
 
 #gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/OWNER/REPO/actions/artifacts/ARTIFACT_ID
  content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
+
+ 
