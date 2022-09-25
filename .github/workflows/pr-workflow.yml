@@ -41,6 +41,7 @@ jobs:
         run: |
           content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
           artifact_id=$( jq -r  '.id' <<< "${content}" ) 
+          echo ${artifact_id}
       #gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts/${artifact_id}
       - name: Create Workflow Artifact
         run: |
