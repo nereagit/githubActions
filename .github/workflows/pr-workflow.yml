@@ -33,7 +33,7 @@ jobs:
           artifactFile=$(gh run download -n "concurrency-job-level")
           jobId=$( tail -n 1 input_file )
           echo "${jobId}"
-          echo ::set-output name=job_id::$(tail -n 1 input_file)
+          echo ::set-output name=job_id::$(tail -n 1 $input_file)
           rm WorkflowRunLog.txt
       # test to see if done correctly - should echo "value"
       - run: echo ${​​{​​​​​​​​​ steps.get-artifact.outputs.job_id }​​​​​​​​​​​}​​​​​​​​​​​​​​​​​​ #if it works add here the SFDX command to cancel the running job in CI
