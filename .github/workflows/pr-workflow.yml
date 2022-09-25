@@ -25,7 +25,8 @@ jobs:
     #    with:
     #      name: ${{ github.head_ref }}
     #      path: WorkflowRunLog.txt
-      - name: Get artifact for especific workflow run
+      - uses: actions/checkout@v2
+      - name: Get artifact for especific branch
         id: get-artifact
         run: |
           input_file="WorkflowRunLog.txt"
