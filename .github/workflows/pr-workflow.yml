@@ -23,25 +23,17 @@ jobs:
     #    with:
     #      name: ${{ github.head_ref }}
     #      path: WorkflowRunLog.txt
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}  # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          workflow: pr-workflow.yml #${{ github.event.workflow_run.workflow_id }}
-         
-         
-          workflow_conclusion: success
-          commit: ${{github.event.pull_request.head.sha}}
-          if_no_artifact_found: fail
-      #read from file and assign to outputs object
-      - name: Read and assign id to be cancelled
-        id: output_test
+      - name: Get artifact for especific workflow run
+        id: get-artifact
         run: |
           input_file="WorkflowRunLog.txt"
-          echo ::set-output name=new_value::$(tail -n 1 input_file)
+          artifactFile=$(gh run download -n "concurrency-job-level")
+          jobId=$( tail -n 1 input_file )
+          echo "${jobId}"
+          echo ::set-output name=job_id::$(tail -n 1 input_file)
+          rm WorkflowRunLog.txt
       # test to see if done correctly - should echo "value"
-      - run: echo ${​​{​​​​​​​​​ steps.output_test.outputs.new_value }​​​​​​​​​​​}​​​​​​​​​​​​​​​​​​ #if it works add here the SFDX command to cancel the running job in CI
+      - run: echo ${​​{​​​​​​​​​ steps.get-artifact.outputs.job_id }​​​​​​​​​​​}​​​​​​​​​​​​​​​​​​ #if it works add here the SFDX command to cancel the running job in CI
       - name: Create Workflow Artifact
         run: |
           echo "Writing in workflow log file..."
