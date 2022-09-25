@@ -36,15 +36,19 @@ jobs:
           echo ::set-output name=job_id::$(tail -n 1 ${input_file})
           rm WorkflowRunLog.txt
       # test to see if done correctly - should echo "value"
-     
       - run: echo ${{steps.get-artifact.outputs.job_id}} #if it works add here the SFDX command to cancel the running job in CI
+      - name: Delete Old Artifact
+        run: |
+          content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
+          artifact_id=$( jq -r  '.id' <<< "${content}" ) 
+          gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts/${artifact_id}
       - name: Create Workflow Artifact
         run: |
           echo "Writing in workflow log file..."
           echo ${{ github.run_id }} >> WorkflowRunLog.txt
         #env:
-        #  lastjobid: ${{ github.run_id }}
-      - name: Update Workflow Artifact
+        #  lastjobid: ${{ github.run_id }} 
+      - name: Upload Workflow Artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.head_ref }} # source branch of the pull request
