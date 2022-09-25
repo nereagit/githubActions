@@ -36,7 +36,8 @@ jobs:
           echo ::set-output name=job_id::$(tail -n 1 ${input_file})
           rm WorkflowRunLog.txt
       # test to see if done correctly - should echo "value"
-      - run: echo ${​​{​​​​​​​​​ steps.get-artifact.outputs.job_id }​​​​​​​​​​​}​​​​​​​​​​​​​​​​​​ #if it works add here the SFDX command to cancel the running job in CI
+     
+      - run: echo ${{steps.get-artifact.outputs.job_id}} #if it works add here the SFDX command to cancel the running job in CI
       - name: Create Workflow Artifact
         run: |
           echo "Writing in workflow log file..."
