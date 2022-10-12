@@ -76,7 +76,7 @@ jobs:
           dry: true
           only_changed: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prettier_version: 2.5.1
+          prettier_version: 1.12.1
           prettier_options: --check
 
 
