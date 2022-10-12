@@ -44,7 +44,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prettier_version: 1.12.1
 
-      - name: Sleep for 30 seconds
+      - name: Sleep for 30 seconds 
         uses: jakejarvis/wait-action@master
         with:
           time: '90s'
