@@ -75,9 +75,8 @@ jobs:
         with:
           dry: true
           only_changed: true
-          prettier_options: --check
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prettier_version: 1.12.1
+          prettier_version: 2.5.1
 
       #- name: Sleep for 30 seconds 
       #  uses: jakejarvis/wait-action@master
