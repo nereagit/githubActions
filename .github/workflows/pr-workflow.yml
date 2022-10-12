@@ -66,10 +66,10 @@ jobs:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
       - name: 'Checkout source code'
         uses: actions/checkout@v3
-        with:
+        #with:
           #fetch-depth: 0
           #ref: ${{ github.head_ref }}
-          persist-credentials: false
+          #persist-credentials: false
       - name: Execute Prettier Check
         uses: creyD/prettier_action@v4.2
         with:
