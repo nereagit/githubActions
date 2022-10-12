@@ -76,7 +76,6 @@ jobs:
           dry: true
           only_changed: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prettier_plugins: @prettier/plugin-xml
           prettier_version: 2.5.1
           prettier_options: --check
 
