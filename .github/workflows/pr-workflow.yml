@@ -29,6 +29,21 @@ jobs:
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+      - name: Execute Prettier Check
+        uses: creyD/prettier_action@v4.2
+        with:
+          dry: true
+          only_changed: true
+          prettier_options: --check
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prettier_version: 1.12.1
+
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
