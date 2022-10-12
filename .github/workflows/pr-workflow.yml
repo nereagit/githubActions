@@ -66,17 +66,17 @@ jobs:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
       - name: 'Checkout source code'
         uses: actions/checkout@v3
-        #with:
-          #fetch-depth: 0
-          #ref: ${{ github.head_ref }}
-          #persist-credentials: false
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
       - name: Execute Prettier Check
         uses: creyD/prettier_action@v4.2
         with:
           dry: true
           only_changed: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prettier_version: 2.5.1
+          prettier_options: --check
 
       #- name: Sleep for 30 seconds 
       #  uses: jakejarvis/wait-action@master
