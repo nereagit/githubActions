@@ -25,25 +25,25 @@ jobs:
     #    with:
     #      name: ${{ github.head_ref }}
     #      path: WorkflowRunLog.txt
-      - uses: actions/checkout@v2
-      - name: Get artifact for especific branch
-        id: get-artifact
-        run: |
-          input_file="WorkflowRunLog.txt"
-          artifactFile=$(gh run download -n "concurrency-job-level")
-          jobId=$( tail -n 1  ${input_file} )
-          echo "${jobId}"
-          echo ::set-output name=job_id::$(tail -n 1 ${input_file})
-          rm WorkflowRunLog.txt
+    #  - uses: actions/checkout@v2
+    #  - name: Get artifact for especific branch
+    #    id: get-artifact
+    #    run: |
+    #      input_file="WorkflowRunLog.txt"
+    #      artifactFile=$(gh run download -n "concurrency-job-level")
+    #      jobId=$( tail -n 1  ${input_file} )
+    #      echo "${jobId}"
+    #      echo ::set-output name=job_id::$(tail -n 1 ${input_file})
+    #      rm WorkflowRunLog.txt
       # test to see if done correctly - should echo "value"
       # add verif to check if there is an artifact --> if there is none. skip the 'Delete Old Artifact'
-      - run: echo ${{steps.get-artifact.outputs.job_id}} #if it works add here the SFDX command to cancel the running job in CI
-      - name: Delete Old Artifact
-        run: |
-          content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
-          artifact_id=$( jq -r  '.id' <<< "${content}" ) 
-          echo ${artifact_id}
-          gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts/${artifact_id}
+    #  - run: echo ${{steps.get-artifact.outputs.job_id}} #if it works add here the SFDX command to cancel the running job in CI
+    #  - name: Delete Old Artifact
+    #    run: |
+    #      content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
+    #      artifact_id=$( jq -r  '.id' <<< "${content}" ) 
+    #      echo ${artifact_id}
+    #      gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts/${artifact_id}
       #the run if needs to be setup with the jobId we recover from the sfdx deploy command - this step needs to be run in the last step of the CI validation
       - name: Create Workflow Artifact
         run: |
@@ -51,7 +51,7 @@ jobs:
           echo ${{ github.run_id }} >> WorkflowRunLog.txt
         #env:
         #  lastjobid: ${{ github.run_id }} 
-      - name: Upload Workflow Artifact
+      - name: Upload Workflow Artifact    
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.head_ref }} # source branch of the pull request
@@ -60,24 +60,40 @@ jobs:
 
 
 
-      - name: Reviews Counter
+      - name: Reviews Counter    
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
-      - name: Sleep for 30 seconds
-        uses: jakejarvis/wait-action@master
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
         with:
-          time: '90s'
-      - name: Check review status
-        uses: jrylan/github-action-reviews-counter@v1.0.0
-        if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+      - name: Execute Prettier Check
+        uses: creyD/prettier_action@v4.2
         with:
-          script: |
-              core.setFailed('There are no reviews for this request.')
-      - name: Check pull request approval status
-        uses: actions/github-script@v6
-        if: ${{ !contains(('nereagit'), github.actor)}} && github.event.review.state != 'approved'
-        with:
-          script: |
-              core.setFailed('This PR needs to be approved make sure to add the right reviewers!')   
+          dry: true
+          only_changed: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prettier_version: 1.12.1
+          prettier_options: '-c' 
+
+
+      #- name: Sleep for 30 seconds 
+      #  uses: jakejarvis/wait-action@master
+      #  with:
+      #    time: '90s'
+      #- name: Check review status
+      #  uses: jrylan/github-action-reviews-counter@v1.0.0
+      #  if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
+      #  with:
+      #    script: |
+      #        core.setFailed('There are no reviews for this request.')
+      #- name: Check pull request approval status
+      #  uses: actions/github-script@v6
+      #  if: ${{ !contains(('nereagit'), github.actor)}} && github.event.review.state != 'approved'
+      #  with:
+      #    script: |
+      #        core.setFailed('This PR needs to be approved make sure to add the right reviewers!')   
   
