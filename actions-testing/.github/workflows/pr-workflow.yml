@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
       
     steps:
-      - name: Reviews Counter
+      - name: Reviews Counter  
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
