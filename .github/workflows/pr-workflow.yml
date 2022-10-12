@@ -10,21 +10,56 @@ on:
 
 jobs:
   #check reviewers status
-  reviewers-added:
+  reviewers:
     runs-on: ubuntu-latest 
     concurrency:
       group: ${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
-
-    # Map a step output to a job output
-    outputs:
-      output1: ${{ steps.step1.outputs.test }}
-      
+    env:
+     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: cancel concurrent jobs
-        run: echo "canceling job..."
-      - id: step1
-        run: echo "::set-output name=test::hello"
+    #  - name: cancel concurrent jobs
+    #    run: echo ${{lastjobid}}
+    #  - name: Download Pull Request Artifact
+    #    uses: actions/download-artifact@v3
+    #    with:
+    #      name: ${{ github.head_ref }}
+    #      path: WorkflowRunLog.txt
+      - uses: actions/checkout@v2
+      - name: Get artifact for especific branch
+        id: get-artifact
+        run: |
+          input_file="WorkflowRunLog.txt"
+          artifactFile=$(gh run download -n "concurrency-job-level")
+          jobId=$( tail -n 1  ${input_file} )
+          echo "${jobId}"
+          echo ::set-output name=job_id::$(tail -n 1 ${input_file})
+          rm WorkflowRunLog.txt
+      # test to see if done correctly - should echo "value"
+      # add verif to check if there is an artifact --> if there is none. skip the 'Delete Old Artifact'
+      - run: echo ${{steps.get-artifact.outputs.job_id}} #if it works add here the SFDX command to cancel the running job in CI
+      - name: Delete Old Artifact
+        run: |
+          content=$( gh api -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts --jq  ".artifacts[] | select(.workflow_run.head_branch == \"concurrency-job-level\") | {id}") 
+          artifact_id=$( jq -r  '.id' <<< "${content}" ) 
+          echo ${artifact_id}
+          gh api --method DELETE -H "Accept: application/vnd.github+json" /repos/nereagit/githubActions/actions/artifacts/${artifact_id}
+      #the run if needs to be setup with the jobId we recover from the sfdx deploy command - this step needs to be run in the last step of the CI validation
+      - name: Create Workflow Artifact
+        run: |
+          echo "Writing in workflow log file..."
+          echo ${{ github.run_id }} >> WorkflowRunLog.txt
+        #env:
+        #  lastjobid: ${{ github.run_id }} 
+      - name: Upload Workflow Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.head_ref }} # source branch of the pull request
+          path: WorkflowRunLog.txt #need to create a folder to store this >> need to delete this artifact when merging the branch
+          retention-days: 7
+
+
+
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
         with:
@@ -61,4 +96,3 @@ jobs:
           script: |
               core.setFailed('This PR needs to be approved make sure to add the right reviewers!')   
   
- 
