@@ -3,8 +3,10 @@ on:
   workflow_dispatch:
   
 jobs:
-  coverage:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.validation.outputs.COVERAGE }}
     steps:
       # Install SFDX
       - name: Install sfdx
@@ -14,15 +16,20 @@ jobs:
         run: npm install jquery
       # Validate Deployment
       - name: Validate Deployment
-        run: 'sfdx force:source:deploy -x manifest/package.xml -c -l RunAllTestsInOrg --coverageformatters=json-summary --resultsdir test-results'
-      #Write a comment with the Coverage
-      - uses: actions/github-script@v5
+        id: validation
+        run: |
+          'sfdx force:source:deploy -x manifest/package.xml -c -l RunAllTestsInOrg --coverageformatters=json-summary --resultsdir test-results'
+          echo "COVERAGE=$(cat test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )" >> $GITHUB_OUTPUT
+  comment:
+     #Write a comment with the Coverage
+    needs: set-ci-variables
+    uses: actions/github-script@v6
         with:
           script: |
-            coverage=$(cat test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 Total Coverage: $coverage 🚀'
+              body: '🚀 Total Coverage: ${{ needs.build.outputs.coverage }} 🚀',
+              labels: ['Coverage Reporting']
             })
