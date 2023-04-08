@@ -8,17 +8,18 @@ jobs:
     outputs:
       coverage: ${{ steps.validation.outputs.COVERAGE }}
     steps:
+      - uses: actions/checkout@v2
       # Install SFDX
       - name: Install sfdx
         run: npm install --global sfdx-cli
       # Install JQuery
-      - name: Install sfdx
+      - name: Install JQuery
         run: npm install jquery
       # Validate Deployment
       - name: Validate Deployment
         id: validation
         run: |
-          echo "COVERAGE=$(cat test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )" >> $GITHUB_OUTPUT
+          echo "COVERAGE=$(cat ./test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )" >> $GITHUB_OUTPUT
   comment:
     #Write a comment with the Coverage
     needs: build
@@ -28,7 +29,7 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: github.event.number,
+              issue_number: 1,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '🚀 Total Coverage: ${{ needs.build.outputs.coverage }} 🚀',
