@@ -18,7 +18,7 @@ jobs:
       - name: Validate Deployment
         id: validation
         run: |
-          echo "COVERAGE=$(cat test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )" >> $GITHUB_OUTPUT
+          echo "COVERAGE=$(cat ./test-results/coverage/coverage-summary.json | jq -r '.total.lines.pct' )" >> $GITHUB_OUTPUT
   comment:
     #Write a comment with the Coverage
     needs: build
