@@ -1,0 +1,81 @@
+# This is a basic workflow to help you get started with Actions
+
+name: PR Setup && Review
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pull request events but only for the "main" branch
+  pull_request:
+    branches:
+      - develop
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  pr-setup:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:
+        ADMIN_USERS: ${{secrets.ADMIN_USERS}}
+        CG_USERS: ${{secrets.CG_USERS}}
+        OFFLINE_USERS: ${{secrets.OFFLINE_USERS}}
+        B2B_USERS: ${{secrets.B2B_USERS}}
+        INT_USERS: ${{secrets.INT_USERS}}
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Add step per team to label them
+      - name: Add CG Team labels
+        uses: andymckay/labeler@master
+        if: contains(env.CG_USERS, github.event.pull_request.user.login)
+        with:
+          add-labels: "CG Team"
+          ignore-if-labeled: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Add Offline Team labels
+        uses: andymckay/labeler@master
+        if: contains(env.OFFLINE_USERS, github.event.pull_request.user.login)
+        with:
+          add-labels: "Offline Team"
+          ignore-if-labeled: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add B2B Team labels
+        uses: andymckay/labeler@master
+        if: contains(env.B2B_USERS, github.event.pull_request.user.login)
+        with:
+          add-labels: "B2B Team"
+          ignore-if-labeled: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Integration Team labels
+        uses: andymckay/labeler@master
+        if: contains(env.INT_USERS, github.event.pull_request.user.login)
+        with:
+          add-labels: "Integration Team"
+          ignore-if-labeled: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Conditional checks
+        run: |
+            echo No reviewers added - ${{toJson(github.event.pull_request.requested_reviewers) == '[]' }}
+            echo Author is not admin - ${{!contains(secrets.ADMIN_USERS, github.event.pull_request.user.login)}}
+     
+      #Fails only non admins by checking the PR status 
+      - name: Require Review
+        if: ${{toJson(github.event.pull_request.requested_reviewers) == '[]' && !contains(env.ADMIN_USERS, github.event.pull_request.user.login)}}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('A review is required in this PR.')
+
+
+
+      
+     
