@@ -4,14 +4,20 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }} 
+  cancel-in-progress: true
+
 jobs:
   #check reviewers status
   reviewers-added:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
       
     steps:
       - name: Reviews Counter
         uses: jrylan/github-action-reviews-counter@v1.0.0
+
         if: 'steps.reviews.outputs.approved < 1 && steps.reviews.outputs.changes_requested != 0'
         run: |
           echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
